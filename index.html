@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10121b">
+  <title>Songwriter Karaoke</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#library" aria-label="Songwriter Karaoke home"><span class="brand-mark">♫</span><span>SONGWRITER <b>KARAOKE</b></span></a>
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="tab active" data-tab="library">Library</button>
+      <button class="tab" data-tab="import">Import</button>
+      <button class="tab" data-tab="editor">Editor</button>
+      <button class="tab" data-tab="player">Player</button>
+    </nav>
+    <button class="button button-small" id="new-project-top">＋ New project</button>
+  </header>
+
+  <main>
+    <section class="view active" id="view-library" aria-labelledby="library-title">
+      <div class="page-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h1 id="library-title">Song library</h1><p class="subheading">Keep your tracks and lyric timing together.</p></div><button class="button button-primary" id="new-project">＋ New project</button></div>
+      <div class="project-grid" id="project-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="view" id="view-import" aria-labelledby="import-title">
+      <div class="page-heading"><div><p class="eyebrow">START A SONG</p><h1 id="import-title">Import</h1><p class="subheading">Add a local audio track and your lyrics.</p></div></div>
+      <div class="workspace-grid">
+        <article class="panel">
+          <div class="panel-title"><span class="step">01</span><div><h2>Audio track</h2><p>Audio stays in this browser on your device.</p></div></div>
+          <label class="upload-zone" for="import-audio"><span class="upload-icon">↑</span><strong>Choose an audio file</strong><span>MP3, WAV, M4A, OGG and other browser-supported formats</span><input id="import-audio" type="file" accept="audio/*"></label>
+          <p class="file-status" id="import-file-status">No audio selected</p>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><span class="step">02</span><div><h2>Lyrics</h2><p>Paste one line per row, or import an LRC file.</p></div></div>
+          <textarea id="import-lyrics" class="lyrics-input" placeholder="Paste lyrics here, one line per row…" spellcheck="false"></textarea>
+          <div class="button-row"><label class="button file-button">Import .LRC<input id="lrc-file" type="file" accept=".lrc,.txt,text/plain"></label><button class="button button-primary" id="save-import">Save to editor →</button></div>
+        </article>
+      </div>
+      <article class="panel waveform-panel"><div class="panel-title"><div><h2>Waveform</h2><p>Click the waveform to seek through your track.</p></div></div><div class="wave-wrap"><canvas id="import-waveform" aria-label="Audio waveform; click to seek"></canvas><div class="wave-empty" id="import-wave-empty">Upload a track to see its waveform</div></div></article>
+    </section>
+
+    <section class="view" id="view-editor" aria-labelledby="editor-title">
+      <div class="page-heading"><div><p class="eyebrow">MAKE IT SYNC</p><h1 id="editor-title">Lyric editor</h1><p class="subheading" id="editor-project-name">Select a project to edit its lyrics.</p></div><div class="heading-actions"><label class="button file-button">＋ Audio<input id="editor-audio" type="file" accept="audio/*"></label><button class="button" id="export-lrc">↓ Export LRC</button></div></div>
+      <article class="panel editor-player">
+        <div class="wave-wrap"><canvas id="editor-waveform" aria-label="Audio waveform; click to seek"></canvas><div class="wave-empty" id="editor-wave-empty">Add an audio file to display its waveform</div></div>
+        <div class="transport"><button class="play-button" id="editor-play" aria-label="Play">▶</button><span class="time-readout" id="editor-time">0:00 / 0:00</span><span class="transport-spacer"></span><label class="toggle"><input type="checkbox" id="vocal-cut"> Reduce center vocals</label></div>
+      </article>
+      <article class="panel lyrics-editor-panel">
+        <div class="editor-toolbar"><div><h2>Lyrics &amp; timing</h2><p>Play the song and stamp each line as it begins.</p></div><div class="button-row"><button class="button button-primary" id="stamp-next">⏱ Stamp next line <kbd>Space</kbd></button><button class="button" id="reset-sync">Restart</button></div></div>
+        <div class="sync-progress"><span id="sync-progress-text">0 of 0 lines timed</span><div class="progress-track"><span id="sync-progress-bar"></span></div></div>
+        <textarea id="editor-lyrics" class="lyrics-input editor-lyrics-input" placeholder="Add one lyric line per row…" spellcheck="false"></textarea>
+        <div class="lyrics-list" id="lyrics-list"></div>
+        <p class="hint">Tip: Spacebar stamps the next line while the audio is playing. Click a lyric to jump to its timestamp.</p>
+      </article>
+    </section>
+
+    <section class="view" id="view-player" aria-labelledby="player-title">
+      <div class="player-heading"><div><p class="eyebrow">SING ALONG</p><h1 id="player-title">Karaoke player</h1><p class="subheading" id="player-project-name">Choose a song from your library.</p></div><div class="player-settings"><label>Text size <input id="font-size" type="range" min="24" max="72" value="42"><output id="font-size-value">42</output></label><label>Backdrop <select id="backdrop"><option value="midnight">Midnight</option><option value="violet">Violet glow</option><option value="ocean">Ocean</option><option value="plain">Solid dark</option></select></label></div></div>
+      <div class="karaoke-stage midnight" id="karaoke-stage" aria-live="polite"><div class="stage-song" id="stage-song">No song selected</div><div class="stage-lyrics" id="stage-lyrics"><p class="stage-empty">Choose a project and add lyrics to get started.</p></div></div>
+      <article class="panel player-controls"><div class="transport"><button class="play-button" id="player-play" aria-label="Play">▶</button><span class="time-readout" id="player-time">0:00 / 0:00</span><input class="seek-slider" id="seek-slider" type="range" min="0" max="1000" value="0" aria-label="Seek audio"><label class="toggle"><input type="checkbox" id="player-vocal-cut"> Reduce vocals</label></div></article>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>Made for the moment between the beat and the words.</span><span>Audio and projects are stored locally in this browser.</span></footer>
+  <audio id="audio" preload="metadata"></audio>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="project-dialog"><form method="dialog" id="project-form"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">NEW PROJECT</p><h2>Name your song</h2><label class="field-label" for="project-name">Project name</label><input id="project-name" class="text-field" maxlength="80" placeholder="Song title" required><div class="button-row dialog-actions"><button class="button" value="cancel">Cancel</button><button class="button button-primary" id="create-project" value="default">Create project</button></div></form></dialog>
+</body>
+</html>
